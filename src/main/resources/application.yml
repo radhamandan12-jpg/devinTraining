@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: loan-approval-assistant
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:loandb}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+# Set the ANTHROPIC_API_KEY environment variable to enable the real Claude client;
+# without it the application runs on the deterministic local stub.
+anthropic:
+  base-url: https://api.anthropic.com
+  model: ${ANTHROPIC_MODEL:claude-sonnet-4-5-20250929}
+  max-tokens: 2048
+  timeout-seconds: 30
+
+lending:
+  rules:
+    min-credit-score: 640
+    review-credit-score: 580
+    max-debt-to-income: 0.36
+    review-debt-to-income: 0.43
+    min-annual-income: 25000
+    min-years-employed: 1
+    max-loan-to-income-multiple: 5
+    auto-approve-enabled: true
+
+app:
+  seed:
+    officer-username: ${SEED_OFFICER_USERNAME:officer}
+    officer-password: ${SEED_OFFICER_PASSWORD:officer123!}

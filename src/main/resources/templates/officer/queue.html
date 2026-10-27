@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Review queue')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div class="container">
+    <h2 class="mb-4">Manual review queue</h2>
+    <div th:if="${#lists.isEmpty(applications)}" class="alert alert-info">
+        No applications awaiting review.
+    </div>
+    <table class="table table-hover" th:unless="${#lists.isEmpty(applications)}">
+        <thead>
+        <tr><th>#</th><th>Applicant</th><th>Amount</th><th>Purpose</th><th>Submitted</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="app : ${applications}">
+            <td><a th:href="@{/officer/applications/{id}(id=${app.id})}" th:text="${app.id}"></a></td>
+            <td th:text="${app.applicant.fullName}"></td>
+            <td th:text="${app.requestedAmount}"></td>
+            <td th:text="${app.loanPurpose}"></td>
+            <td th:text="${#temporals.format(app.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

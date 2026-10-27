@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My applications')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My applications</h2>
+        <a class="btn btn-primary" href="/applications/new">New application</a>
+    </div>
+    <div th:if="${#lists.isEmpty(applications)}" class="alert alert-info">
+        You have not submitted any applications yet.
+    </div>
+    <table class="table table-hover" th:unless="${#lists.isEmpty(applications)}">
+        <thead>
+        <tr>
+            <th>#</th><th>Amount</th><th>Purpose</th><th>Term</th><th>Status</th><th>Submitted</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="app : ${applications}">
+            <td><a th:href="@{/applications/{id}(id=${app.id})}" th:text="${app.id}"></a></td>
+            <td th:text="${app.requestedAmount}"></td>
+            <td th:text="${app.loanPurpose}"></td>
+            <td th:text="${app.termMonths + ' mo'}"></td>
+            <td>
+                <span class="badge"
+                      th:classappend="${app.status.name() == 'APPROVED' ? 'bg-success' :
+                                       (app.status.name() == 'REJECTED' ? 'bg-danger' :
+                                       (app.status.name() == 'MANUAL_REVIEW' ? 'bg-warning text-dark' : 'bg-secondary'))}"
+                      th:text="${app.status}"></span>
+            </td>
+            <td th:text="${#temporals.format(app.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

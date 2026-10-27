@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Review application')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div class="container">
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Application #<span th:text="${app.id}"></span></h2>
+        <span class="badge fs-6"
+              th:classappend="${app.status.name() == 'APPROVED' ? 'bg-success' :
+                               (app.status.name() == 'REJECTED' ? 'bg-danger' :
+                               (app.status.name() == 'MANUAL_REVIEW' ? 'bg-warning text-dark' : 'bg-secondary'))}"
+              th:text="${app.status}"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">Applicant</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Name: <b th:text="${app.applicant.fullName}"></b></li>
+                    <li class="list-group-item">Amount: <span th:text="${app.requestedAmount}"></span>
+                        over <span th:text="${app.termMonths}"></span> months (<span th:text="${app.loanPurpose}"></span>)</li>
+                    <li class="list-group-item">Annual income: <span th:text="${app.annualIncome}"></span></li>
+                    <li class="list-group-item">Monthly debt: <span th:text="${app.monthlyDebtPayments}"></span></li>
+                    <li class="list-group-item">DTI: <span th:text="${app.debtToIncomeRatio()}"></span></li>
+                    <li class="list-group-item">Credit score: <span th:text="${app.creditScore}"></span></li>
+                    <li class="list-group-item">Employment: <span th:text="${app.employmentStatus}"></span>
+                        (<span th:text="${app.yearsEmployed}"></span> yrs)</li>
+                    <li class="list-group-item" th:if="${app.applicantStatement}">
+                        Statement: <span th:text="${app.applicantStatement}"></span></li>
+                </ul>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header">Lending rules outcome</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:each="e : ${app.ruleEvaluations}">
+                        <span class="badge me-2"
+                              th:classappend="${e.passed ? 'bg-success' : (e.severity.name() == 'REJECT' ? 'bg-danger' : 'bg-warning text-dark')}"
+                              th:text="${e.passed ? 'PASS' : e.severity}"></span>
+                        <b th:text="${e.ruleName}"></b> - <span th:text="${e.detail}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card mb-3" th:if="${!#lists.isEmpty(app.documents)}">
+                <div class="card-header">Documents (AI extraction)</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:each="doc : ${app.documents}">
+                        <b th:text="${doc.filename}"></b>
+                        <div class="small text-muted" th:text="${doc.extractedData}"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">AI advisory (non-binding)</div>
+                <div class="card-body">
+                    <h6>Summary</h6>
+                    <p th:text="${app.aiSummary}"></p>
+                    <h6>Missing / inconsistent info</h6>
+                    <pre style="white-space: pre-wrap;" th:text="${app.aiMissingInfo}"></pre>
+                    <h6>Risk highlights</h6>
+                    <pre style="white-space: pre-wrap;" th:text="${app.aiRiskNotes}"></pre>
+                </div>
+            </div>
+
+            <div class="card mb-3" th:if="${app.status.name() == 'MANUAL_REVIEW'}">
+                <div class="card-header">Officer decision</div>
+                <div class="card-body">
+                    <form th:action="@{/officer/applications/{id}/decision(id=${app.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Decision</label>
+                            <select class="form-select" name="decision" required>
+                                <option value="">-- select --</option>
+                                <option value="APPROVED">Approve</option>
+                                <option value="REJECTED">Reject</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Justification (recorded in audit log)</label>
+                            <textarea class="form-control" name="notes" rows="3" required></textarea>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Record decision</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card" th:if="${!#lists.isEmpty(communications)}">
+                <div class="card-header">Drafted customer communications</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:each="c : ${communications}">
+                        <b th:text="${c.subject}"></b>
+                        <pre class="mt-2 mb-0" style="white-space: pre-wrap;" th:text="${c.body}"></pre>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

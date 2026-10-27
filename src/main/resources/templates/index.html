@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Loan Processing Assistant')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div class="container">
+    <div class="p-5 bg-light rounded-3">
+        <h1 class="display-5">Loan Processing Assistant</h1>
+        <p class="lead">Apply for a loan online. Your application is evaluated by transparent,
+            configurable lending rules, with AI assistance for document review and communication.
+            Final decisions are made by deterministic business rules and authorized loan
+            officers - never by an AI model.</p>
+        <a class="btn btn-primary btn-lg" href="/register">Apply now</a>
+        <a class="btn btn-outline-primary btn-lg" href="/login">Sign in</a>
+    </div>
+</div>
+</body>
+</html>

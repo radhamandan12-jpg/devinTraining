@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div class="container">
+    <div class="alert alert-danger">
+        <h4>Something went wrong</h4>
+        <p th:if="${status}" th:text="${status + ' - ' + (error ?: 'Unexpected error')}"></p>
+        <a href="/" class="btn btn-outline-danger btn-sm">Back to home</a>
+    </div>
+</div>
+</body>
+</html>

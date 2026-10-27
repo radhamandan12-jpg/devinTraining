@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('New application')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div class="container" style="max-width: 720px;">
+    <h2 class="mb-1">Loan application</h2>
+    <p class="text-muted mb-4">Only financial and employment information is collected.
+        We never ask for or evaluate protected characteristics.</p>
+    <form th:action="@{/applications}" method="post" th:object="${applicationForm}">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Requested amount</label>
+                <input class="form-control" type="number" step="0.01" th:field="*{requestedAmount}" required>
+                <div class="text-danger" th:errors="*{requestedAmount}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Term (months)</label>
+                <input class="form-control" type="number" th:field="*{termMonths}" required>
+                <div class="text-danger" th:errors="*{termMonths}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Purpose</label>
+                <select class="form-select" th:field="*{loanPurpose}" required>
+                    <option value="">-- select --</option>
+                    <option th:each="p : ${loanPurposes}" th:value="${p}" th:text="${p}"></option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Credit score</label>
+                <input class="form-control" type="number" th:field="*{creditScore}">
+                <div class="text-danger" th:errors="*{creditScore}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Annual income</label>
+                <input class="form-control" type="number" step="0.01" th:field="*{annualIncome}" required>
+                <div class="text-danger" th:errors="*{annualIncome}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Monthly debt payments</label>
+                <input class="form-control" type="number" step="0.01" th:field="*{monthlyDebtPayments}" required>
+                <div class="text-danger" th:errors="*{monthlyDebtPayments}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Employment status</label>
+                <select class="form-select" th:field="*{employmentStatus}" required>
+                    <option value="">-- select --</option>
+                    <option th:each="e : ${employmentStatuses}" th:value="${e}" th:text="${e}"></option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Years employed</label>
+                <input class="form-control" type="number" th:field="*{yearsEmployed}">
+                <div class="text-danger" th:errors="*{yearsEmployed}"></div>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Additional statement (optional)</label>
+                <textarea class="form-control" rows="3" th:field="*{applicantStatement}"></textarea>
+                <div class="text-danger" th:errors="*{applicantStatement}"></div>
+            </div>
+        </div>
+        <button class="btn btn-primary mt-4" type="submit">Submit application</button>
+    </form>
+</div>
+</body>
+</html>
