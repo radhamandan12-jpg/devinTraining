@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "/home/ubuntu/nodejs/bin/mcp-server-filesystem",
+      "args": ["/home/ubuntu/devinTraining"]
+    },
+    "github": {
+      "command": "/home/ubuntu/github-mcp-server",
+      "args": ["stdio"]
+    }
+  }
+}

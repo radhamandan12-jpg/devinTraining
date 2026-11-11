@@ -38,6 +38,37 @@ temperature/max-tokens) and calls `chatModel.call(...)`, then renders the
 rendered prompt (`promptTemplate.create(vars)` → `Prompt`) alongside
 Claude's response via `chatClient.prompt(prompt)`.
 
+## Tool calling demo (`/tools`)
+
+`/tools` registers two `@Tool` classes on the `ChatClient` — Claude decides
+when to invoke them:
+
+- `DbTools` — JdbcTemplate against MySQL (`claude_demo.notes`, auto-created
+  by `schema.sql`): `saveNote`, `listNotes`, `searchNotes`.
+- `ApiTools` — `RestClient` against the JSONPlaceholder REST API:
+  `fetchPost`, `fetchUser`, `fetchTodos`.
+
+The page also renders the current contents of the `notes` table.
+
+## MCP client demo (`/mcp`)
+
+`/mcp` uses `spring-ai-starter-mcp-client` — the app acts as an MCP client,
+spawning two stdio servers configured in `src/main/resources/mcp-servers.json`:
+
+- **filesystem** (`mcp-server-filesystem`, npm) scoped to the workspace dir
+- **github** (`github-mcp-server` binary) — needs
+  `GITHUB_PERSONAL_ACCESS_TOKEN` in the environment
+
+`ChatClient` is built with `.defaultToolCallbacks(mcpToolCallbacks)` so every
+MCP tool is available to Claude. Run with Node on PATH, e.g.:
+
+```bash
+PATH=/home/ubuntu/nodejs/bin:$PATH \
+GITHUB_PERSONAL_ACCESS_TOKEN=ghp_... \
+ANTHROPIC_API_KEY=... ANTHROPIC_BASE_URL=... ANTHROPIC_MODEL=... \
+java -jar target/spring-ai-claude-demo-1.0.0.jar
+```
+
 ## RAG demo (`/rag`)
 
 A second page at http://localhost:8082/rag demonstrates embeddings +

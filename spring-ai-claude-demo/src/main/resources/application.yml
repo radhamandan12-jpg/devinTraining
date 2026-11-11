@@ -1,7 +1,21 @@
 spring:
   application:
     name: spring-ai-claude-demo
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/claude_demo?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+    username: ${DB_USER:demo}
+    password: ${DB_PASSWORD:demo123}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
   ai:
+    mcp:
+      client:
+        enabled: true
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
+
     anthropic:
       api-key: ${ANTHROPIC_API_KEY:not-configured}
       base-url: ${ANTHROPIC_BASE_URL:https://api.anthropic.com}
